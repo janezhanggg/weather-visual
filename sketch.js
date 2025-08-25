@@ -19,7 +19,7 @@ let leftPanelContent = {
 
 let leftPanelScrollY = 0;
 let leftPanelMaxScroll = 0;
-let leftPanelContentHeight = 760; // Estimated content height, will be calculated dynamically
+let leftPanelContentHeight = 770; // Estimated content height, will be calculated dynamically
 let isScrollingLeftPanel = false;
 
 let weatherData = null;
@@ -280,7 +280,7 @@ function toggleLeftPanel() {
 
 function drawLeftPanel() {
   if (!showLeftPanel) return;
-  leftPanelContentHeight = 760; // Adjust this based on your actual content
+  leftPanelContentHeight = 770; // Adjust this based on your actual content
   leftPanelMaxScroll = max(0, leftPanelContentHeight - height);  // Panel background
   fill(255, 255, 255, 150);
   noStroke();
@@ -499,7 +499,7 @@ tint(255, cloudAlpha);
 }
 
 function drawScrollIndicator() {
-  let indicatorX = leftPanelWidth - 5;
+  let indicatorX = leftPanelWidth - 3;
   let indicatorHeight = height - 20;
   let indicatorY = 10;
   let indicatorWidth = 3;
@@ -515,7 +515,7 @@ function drawScrollIndicator() {
 
   let thumbY = map(-leftPanelScrollY, 0, leftPanelMaxScroll, indicatorY, indicatorY + indicatorHeight - thumbHeight);
 
-  fill(135, 95, 214, 200);
+  fill(100, 150);
   rect(indicatorX - indicatorWidth/2, thumbY, indicatorWidth, thumbHeight, 2);
 }
 
