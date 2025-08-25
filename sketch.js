@@ -1427,34 +1427,47 @@ function updateTempBlob(temp) {
   // Always convert to Celsius for consistent coloring
   let celsiusTemp = units === 'metric' ? temp : (temp - 32) * 5 / 9;
 
-    tempBlob.baseRadius = width * 0.18 * map(abs(celsiusTemp), 0, 40, 0.8, 1.2);
+  tempBlob.baseRadius = width * 0.18 * map(abs(celsiusTemp), 0, 40, 0.8, 1.2);
 
   if (celsiusTemp < 0) {
     tempBlob.color = colors.tempCold;
   } else if (celsiusTemp < 10) {
     let lerpAmt = map(celsiusTemp, 0, 10, 0, 1);
     tempBlob.color = lerpColor(
-      color(colors.tempCold),
-      color(colors.tempCool),
-      lerpAmt
+        color(colors.tempCold),
+        color(colors.tempCool),
+        lerpAmt
     ).levels;
   } else if (celsiusTemp < 20) {
     let lerpAmt = map(celsiusTemp, 10, 20, 0, 1);
     tempBlob.color = lerpColor(
-      color(colors.tempCool),
-      color(colors.tempWarm),
-      lerpAmt
+        color(colors.tempCool),
+        color(colors.tempWarm),
+        lerpAmt
     ).levels;
   } else {
     let lerpAmt = map(celsiusTemp, 20, 30, 0, 1);
     tempBlob.color = lerpColor(
-      color(colors.tempWarm),
-      color(colors.tempHot),
-      lerpAmt
+        color(colors.tempWarm),
+        color(colors.tempHot),
+        lerpAmt
     ).levels;
   }
 
-  tempBlob.speed = map(celsiusTemp, -10, 30, 2, 6);
+  // Speed based on temperature: slow when cold, normal at average, fast when hot
+  if (celsiusTemp < 5) {
+    // Cold temperatures: very slow movement
+    tempBlob.speed = map(celsiusTemp, -20, 5, 0.5, 2);
+  } else if (celsiusTemp < 25) {
+    // Average temperatures: normal speed
+    tempBlob.speed = map(celsiusTemp, 5, 25, 2, 4);
+  } else {
+    // Hot temperatures: fast movement
+    tempBlob.speed = map(celsiusTemp, 25, 45, 4, 8);
+  }
+
+  // Ensure speed doesn't go below a minimum threshold for visibility
+  tempBlob.speed = max(tempBlob.speed, 0.3);
 }
 
 
