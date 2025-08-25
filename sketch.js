@@ -499,10 +499,10 @@ tint(255, cloudAlpha);
 }
 
 function drawScrollIndicator() {
-  let indicatorX = leftPanelWidth - 8;
+  let indicatorX = leftPanelWidth - 5;
   let indicatorHeight = height - 20;
   let indicatorY = 10;
-  let indicatorWidth = 4;
+  let indicatorWidth = 3;
 
   // Background track
   fill(200, 100);
@@ -515,7 +515,7 @@ function drawScrollIndicator() {
 
   let thumbY = map(-leftPanelScrollY, 0, leftPanelMaxScroll, indicatorY, indicatorY + indicatorHeight - thumbHeight);
 
-  fill(colors.buttonBg);
+  fill(colors.buttonActive);
   rect(indicatorX - indicatorWidth/2, thumbY, indicatorWidth, thumbHeight, 2);
 }
 
