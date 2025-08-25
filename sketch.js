@@ -6,7 +6,7 @@ let visibilityMasks = {
 };
 
 let showLeftPanel = true;
-let leftPanelWidth = 375;
+let leftPanelWidth = 380;
 let togglePanelButton;
 let leftPanelContent = {
   temperature: { value: 0, unit: "°F" },
@@ -19,7 +19,7 @@ let leftPanelContent = {
 
 let leftPanelScrollY = 0;
 let leftPanelMaxScroll = 0;
-let leftPanelContentHeight = 770; // Estimated content height, will be calculated dynamically
+let leftPanelContentHeight = 750; // Estimated content height, will be calculated dynamically
 let isScrollingLeftPanel = false;
 
 let weatherData = null;
@@ -53,7 +53,7 @@ let isMouseOverInstructions = false;
 let tempUnitButton;
 let errorMessage = ""; 
 
-let leftPanelTargetWidth = 370;
+let leftPanelTargetWidth = 380;
 let leftPanelTransitioning = false;
 let leftPanelTransitionProgress = 0;
 let leftPanelTransitionSpeed = 0.06;
@@ -280,7 +280,7 @@ function toggleLeftPanel() {
 
 function drawLeftPanel() {
   if (!showLeftPanel) return;
-  leftPanelContentHeight = 770; // Adjust this based on your actual content
+  leftPanelContentHeight = 750; // Adjust this based on your actual content
   leftPanelMaxScroll = max(0, leftPanelContentHeight - height);  // Panel background
   fill(255, 255, 255, 150);
   noStroke();
@@ -515,7 +515,7 @@ function drawScrollIndicator() {
 
   let thumbY = map(-leftPanelScrollY, 0, leftPanelMaxScroll, indicatorY, indicatorY + indicatorHeight - thumbHeight);
 
-  fill(100, 150);
+  fill(colors.buttonBg);
   rect(indicatorX - indicatorWidth/2, thumbY, indicatorWidth, thumbHeight, 2);
 }
 
