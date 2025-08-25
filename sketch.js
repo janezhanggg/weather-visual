@@ -17,6 +17,11 @@ let leftPanelContent = {
   precipitation: { value: 0, unit: "mm" }
 };
 
+let leftPanelScrollY = 0;
+let leftPanelMaxScroll = 0;
+let leftPanelContentHeight = 800; // Estimated content height, will be calculated dynamically
+let isScrollingLeftPanel = false;
+
 let weatherData = null;
 let forecastData = null;
 let currentDay = 0;
@@ -230,7 +235,21 @@ function createTogglePanelButton() {
     togglePanelButton.style('background', 'rgba(255, 255, 255, 0.5)');
   });
 }
+function mouseWheel(event) {
+  // Only handle scroll if mouse is over the left panel and panel is showing
+  if (showLeftPanel && mouseX >= 0 && mouseX <= leftPanelWidth) {
+    event.preventDefault(); // Prevent page scroll
 
+    let scrollSpeed = 20;
+    leftPanelScrollY -= event.delta * scrollSpeed;
+
+    // Constrain scroll within bounds
+    leftPanelMaxScroll = max(0, leftPanelContentHeight - height + 100);
+    leftPanelScrollY = constrain(leftPanelScrollY, -leftPanelMaxScroll, 0);
+
+    return false; // Prevent default
+  }
+}
 
 function toggleLeftPanel() {
   showLeftPanel = !showLeftPanel;
@@ -242,11 +261,18 @@ function toggleLeftPanel() {
 
 function drawLeftPanel() {
   if (!showLeftPanel) return;
-  
+  push();
   // Panel background
   fill(255, 255, 255, 150);
   noStroke();
   rect(0, 0, leftPanelWidth, height);
+
+  let panelClip = createGraphics(leftPanelWidth, height);
+  panelClip.fill(255);
+  panelClip.rect(0, 0, leftPanelWidth, height);
+  push();
+  translate(0, leftPanelScrollY);
+  leftPanelContentHeight = 850;
   
   // Title
   textFont(marlidesDisplayPro);
@@ -445,7 +471,34 @@ tint(255, cloudAlpha);
   // Display precipitation value with correct units
   let precipText = nf(leftPanelContent.precipitation.value, 0, 1) + " " + leftPanelContent.precipitation.unit;
   text(precipText, 275, 729);
-  
+
+  pop();
+  if (leftPanelMaxScroll > 0) {
+    drawScrollIndicator();
+  }
+
+  pop();
+}
+
+function drawScrollIndicator() {
+  let indicatorX = leftPanelWidth - 10;
+  let indicatorHeight = height - 40;
+  let indicatorY = 20;
+  let indicatorWidth = 4;
+
+  // Background track
+  fill(200, 100);
+  noStroke();
+  rect(indicatorX - indicatorWidth/2, indicatorY, indicatorWidth, indicatorHeight, 2);
+
+  // Scrollbar thumb
+  let thumbHeight = map(height, 0, leftPanelContentHeight, 0, indicatorHeight);
+  thumbHeight = max(thumbHeight, 20); // Minimum thumb height
+
+  let thumbY = map(-leftPanelScrollY, 0, leftPanelMaxScroll, indicatorY, indicatorY + indicatorHeight - thumbHeight);
+
+  fill(100, 150);
+  rect(indicatorX - indicatorWidth/2, thumbY, indicatorWidth, thumbHeight, 2);
 }
 
 function drawWindArrowAt(x, y, speed, direction) {
@@ -541,6 +594,10 @@ function mousePressed() {
     }
   }
 
+  if (showLeftPanel && mouseX >= 0 && mouseX <= leftPanelWidth) {
+    isScrollingLeftPanel = true;
+  }
+
   if (showInstructions) {
     const panelWidth = min(400, width * 0.8);
     const panelHeight = min(300, height * 0.6);
@@ -575,6 +632,21 @@ function mousePressed() {
       closeInstructionsButton.hide();
     }
   }
+}
+
+function mouseDragged() {
+  if (isScrollingLeftPanel && showLeftPanel) {
+    let scrollSpeed = 2;
+    leftPanelScrollY += (mouseY - pmouseY) * scrollSpeed;
+
+    // Constrain scroll within bounds
+    leftPanelMaxScroll = max(0, leftPanelContentHeight - height + 100);
+    leftPanelScrollY = constrain(leftPanelScrollY, -leftPanelMaxScroll, 0);
+  }
+}
+
+function mouseReleased() {
+  isScrollingLeftPanel = false;
 }
 
 function toggleLabels() {
