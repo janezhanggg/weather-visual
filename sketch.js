@@ -6,7 +6,7 @@ let visibilityMasks = {
 };
 
 let showLeftPanel = true;
-let leftPanelWidth = 370;
+let leftPanelWidth = 375;
 let togglePanelButton;
 let leftPanelContent = {
   temperature: { value: 0, unit: "°F" },
@@ -19,7 +19,7 @@ let leftPanelContent = {
 
 let leftPanelScrollY = 0;
 let leftPanelMaxScroll = 0;
-let leftPanelContentHeight = 800; // Estimated content height, will be calculated dynamically
+let leftPanelContentHeight = 770; // Estimated content height, will be calculated dynamically
 let isScrollingLeftPanel = false;
 
 let weatherData = null;
@@ -280,7 +280,7 @@ function toggleLeftPanel() {
 
 function drawLeftPanel() {
   if (!showLeftPanel) return;
-  leftPanelContentHeight = 800; // Adjust this based on your actual content
+  leftPanelContentHeight = 770; // Adjust this based on your actual content
   leftPanelMaxScroll = max(0, leftPanelContentHeight - height);  // Panel background
   fill(255, 255, 255, 150);
   noStroke();
