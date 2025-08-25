@@ -200,6 +200,25 @@ function setup() {
   
   initVisualElements();
   fetchWeatherData();
+  function setupScrolling() {
+    // Register mouseWheel event manually
+    document.addEventListener('wheel', function(e) {
+      if (showLeftPanel && mouseX >= 0 && mouseX <= leftPanelWidth) {
+        e.preventDefault();
+
+        // Calculate how much content extends beyond the visible area
+        leftPanelMaxScroll = max(0, leftPanelContentHeight - height);
+
+        if (leftPanelMaxScroll > 0) {
+          let scrollSpeed = 1;
+          leftPanelScrollY -= e.deltaY * scrollSpeed;
+          leftPanelScrollY = constrain(leftPanelScrollY, -leftPanelMaxScroll, 0);
+
+          console.log("Panel scrolling:", leftPanelScrollY, "Max:", leftPanelMaxScroll);
+        }
+      }
+    }, { passive: false });
+  }
 }
 
 function toggleTempUnit() {
@@ -236,18 +255,18 @@ function createTogglePanelButton() {
   });
 }
 function mouseWheel(event) {
-  // Only handle scroll if mouse is over the left panel and panel is showing
   if (showLeftPanel && mouseX >= 0 && mouseX <= leftPanelWidth) {
-    event.preventDefault(); // Prevent page scroll
+    // Calculate how much content extends beyond the visible area
+    leftPanelMaxScroll = max(0, leftPanelContentHeight - height);
 
-    let scrollSpeed = 20;
-    leftPanelScrollY -= event.delta * scrollSpeed;
+    if (leftPanelMaxScroll > 0) {
+      let scrollSpeed = 20;
+      leftPanelScrollY -= event.delta * scrollSpeed;
+      leftPanelScrollY = constrain(leftPanelScrollY, -leftPanelMaxScroll, 0);
 
-    // Constrain scroll within bounds
-    leftPanelMaxScroll = max(0, leftPanelContentHeight - height + 100);
-    leftPanelScrollY = constrain(leftPanelScrollY, -leftPanelMaxScroll, 0);
-
-    return false; // Prevent default
+      console.log("Panel scrolling (p5):", leftPanelScrollY, "Max:", leftPanelMaxScroll);
+      return false;
+    }
   }
 }
 
@@ -261,18 +280,18 @@ function toggleLeftPanel() {
 
 function drawLeftPanel() {
   if (!showLeftPanel) return;
-  push();
-  // Panel background
+  leftPanelContentHeight = 800; // Adjust this based on your actual content
+  leftPanelMaxScroll = max(0, leftPanelContentHeight - height);  // Panel background
   fill(255, 255, 255, 150);
   noStroke();
   rect(0, 0, leftPanelWidth, height);
-
-  let panelClip = createGraphics(leftPanelWidth, height);
-  panelClip.fill(255);
-  panelClip.rect(0, 0, leftPanelWidth, height);
   push();
+  let clipMask = createGraphics(width, height);
+  clipMask.fill(255);
+  clipMask.rect(0, 0, leftPanelWidth, height);
+
+  // Apply scroll offset to all content
   translate(0, leftPanelScrollY);
-  leftPanelContentHeight = 850;
   
   // Title
   textFont(marlidesDisplayPro);
@@ -477,13 +496,12 @@ tint(255, cloudAlpha);
     drawScrollIndicator();
   }
 
-  pop();
 }
 
 function drawScrollIndicator() {
-  let indicatorX = leftPanelWidth - 10;
-  let indicatorHeight = height - 40;
-  let indicatorY = 20;
+  let indicatorX = leftPanelWidth - 8;
+  let indicatorHeight = height - 20;
+  let indicatorY = 10;
   let indicatorWidth = 4;
 
   // Background track
@@ -636,15 +654,16 @@ function mousePressed() {
 
 function mouseDragged() {
   if (isScrollingLeftPanel && showLeftPanel) {
-    let scrollSpeed = 2;
+    let scrollSpeed = 1;
     leftPanelScrollY += (mouseY - pmouseY) * scrollSpeed;
 
     // Constrain scroll within bounds
-    leftPanelMaxScroll = max(0, leftPanelContentHeight - height + 100);
+    leftPanelMaxScroll = max(0, leftPanelContentHeight - height);
     leftPanelScrollY = constrain(leftPanelScrollY, -leftPanelMaxScroll, 0);
   }
 }
 
+// Add this to handle mouse release
 function mouseReleased() {
   isScrollingLeftPanel = false;
 }
