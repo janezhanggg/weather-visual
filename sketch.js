@@ -1455,15 +1455,15 @@ function updateTempBlob(temp) {
   }
 
   // Speed based on temperature: slow when cold, normal at average, fast when hot
-  if (celsiusTemp < 5) {
+  if (celsiusTemp < 10) {
     // Cold temperatures: very slow movement
-    tempBlob.speed = map(celsiusTemp, -20, 5, 0.5, 2);
+    tempBlob.speed = map(celsiusTemp, -20, 10, 0.5, 2);
   } else if (celsiusTemp < 25) {
     // Average temperatures: normal speed
-    tempBlob.speed = map(celsiusTemp, 5, 25, 2, 4);
+    tempBlob.speed = map(celsiusTemp, 10, 25, 5, 10);
   } else {
     // Hot temperatures: fast movement
-    tempBlob.speed = map(celsiusTemp, 25, 45, 4, 8);
+    tempBlob.speed = map(celsiusTemp, 25, 45, 15, 20);
   }
 
   // Ensure speed doesn't go below a minimum threshold for visibility
